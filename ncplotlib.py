@@ -16,9 +16,11 @@ def profile(var):
     plt.show()
 
     
-def scene(var):
+def scene(var, num_plots):
     # Plot scene diagnostics - x and y domain lengths averaged over simulation time
-    var.plot(x='x', y='y', col=var.dims[0])
+    t = var.dims[0] # time series
+    tlast = (var.size[t]-1)
+    var.isel(**{t:slice(0,tlast,int(tlast/num_plots))}).plot(x='x',y='y',col=t,col_wrap=5)
     plt.title(var.name, fontsize=12)
     plt.show()
 
