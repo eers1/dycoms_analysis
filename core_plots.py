@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import ncplotlib as ncplt
 
 # Open dataset
-nc = 'mbl_sc_dycoms_dg_7260.0.nc'
+nc = '/work/xfc/vol1/user_cache/eers/dycoms_diurnal_test/merged.nc'
 DS = xr.open_dataset(nc)
 
 # Select specific diagnostics or take all
@@ -23,6 +23,6 @@ slices = [DS[name] for name in names_4D]
 # Plot using ncplotlib
 [ncplt.scalar(var) for var in scalars]
 [ncplt.profile(var) for var in profiles]
-[ncplt.scene(var) for var in scenes]
-[ncplt.vslice(var, 'x', 60) for var in slices]
+[ncplt.scene(var,5) for var in scenes]
+[ncplt.vslice(var, 'x', 60, 5) for var in slices]
 
