@@ -21,8 +21,25 @@ scenes = [DS[name] for name in names_3D]
 slices = [DS[name] for name in names_4D]
 
 # Plot using ncplotlib
-[ncplt.scalar(var) for var in scalars]
-[ncplt.profile(var) for var in profiles]
+savepath = '../../save/'
+
+for var in scalars:
+    fig, axes = plt.subplots()
+    fig = ncplt.scalar(fig, axes, var)
+    fig.savefig(savepath + var.name + '.png')
+
+for var in profiles:
+    fig, axes = plt.subplots()
+    fig = ncplt.profile(fig, axes, var)
+    fig.savefig(savepath + var.name + '.png')
+
+#for var in scenes:
+#    #plt.subplots()
+#    ncplt.scene(var, 10)
+#    plt.savefig(savepath + var.name + '.png')
+#   print(var.name + ' saved')
+#
+#print('*** scenes processed ***')
 [ncplt.scene(var,5) for var in scenes]
 [ncplt.vslice(var, 'x', 60, 5) for var in slices]
 

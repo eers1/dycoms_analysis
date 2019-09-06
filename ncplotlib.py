@@ -1,19 +1,18 @@
 # Library of functions for plotting straight from netCDF files
 import matplotlib.pyplot as plt
 
-def scalar(var):
+def scalar(fig, axes, var):
     # Plot scalar diagnostics at each simulation time
-    var.plot()
+    var.plot(ax=axes)
     plt.title(var.name, fontsize=12)
-    plt.show()
+    return fig
 
-
-def profile(var):
+def profile(fig, axes, var):
     # Plot profile diagnostics - through height and at each simulation time
     var_T = var.transpose()
-    var_T.plot()
+    var_T.plot(ax=axes)
     plt.title(var.name, fontsize=12)
-    plt.show()
+    return fig
 
     
 def scene(var, num_plots):
@@ -22,7 +21,7 @@ def scene(var, num_plots):
     tlast = (var.sizes[t]-1)
     var.isel(**{t:slice(0, tlast, int(tlast/num_plots))}).plot(x='x',y='y', col=t, col_wrap=5)
     plt.title(var.name, fontsize=12)
-    plt.show()
+    plt.show() 
 
 
 def vslice(var, horizontal_dim, depth, num_plots):
