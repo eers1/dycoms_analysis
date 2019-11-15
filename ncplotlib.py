@@ -19,17 +19,21 @@ def profile(fig, axes, var):
 def scene(var, savepath):
     # Plot scene diagnostics - x and y domain lengths averaged over height at time snapshots. For short simulations, quick plotting
     t = var.dims[0] # time series
-    var.plot(x='x', y='y', col=t, col_wrap=5)
-    plt.title(var.name, fontsize=12)
+#    g = var.plot(x='x', y='y', col=t)
+    g = var.plot(x='x', y='y', col=t, col_wrap=3)
+    for i, ax in enumerate(g.axes.flat):
+        ax.set_title('Time = %d' % int(var[t][i]) + 's')
+    #plt.title(var.name, fontsize=12)
     plt.savefig(savepath + var.name + '.png')
-
+    plt.close()
     
+
 def scene_long(var, num_plots, savepath):
     # Plot scene diagnostics - x and y domain lengths averaged over simulation time
     t = var.dims[0] # time series
     tlast = (var.sizes[t]-1)
     var.isel(**{t:slice(0, tlast, int(tlast/num_plots))}).plot(x='x',y='y', col=t, col_wrap=5)
-    plt.title(var.name, fontsize=12)
+#    plt.title(var.name, fontsize=12)
     plt.savefig(savepath + var.name + '.png')
 
 
@@ -38,11 +42,16 @@ def vslice(var, depth, horizontal_dim, savepath):
     t = var.dims[0] # time series
     z = var.dims[3]
     if horizontal_dim == 'x':
-        var[:,depth,:,:].plot(x='y', y=z, col=t, col_wrap=5)
+#        g = var[:,depth,:,:].plot(x='y', y=z, col=t)
+        g = var[:,depth,:,:].plot(x='y', y=z, col=t, col_wrap=3)
     elif horizontal_dim == 'y':
-        var[:,:,depth,:].plot(x='x', y=z, col=t, col_wrap=5)
-    plt.title(var.name, fontsize=12)
+#        g = var[:,:,depth,:].plot(x='x', y=z, col=t)
+        g = var[:,:,depth,:].plot(x='x', y=z, col=t, col_wrap=3)
+    for i, ax in enumerate(g.axes.flat):
+        ax.set_title('Time = %d' % int(var[t][i]) + 's')
+#    plt.title(var.name, fontsize=12)
     plt.savefig(savepath + var.name + '.png')
+    plt.close()
 
 
 def vslice_long(var, horizontal_dim, depth, num_plots, savepath):
@@ -54,7 +63,7 @@ def vslice_long(var, horizontal_dim, depth, num_plots, savepath):
         var[:,depth,:,:].isel(**{t:slice(0, tlast, int(tlast/num_plots))}).plot(x='y', y=z, col=t, col_wrap=5)
     elif horizontal_dim == 'y':
         var[:,:,depth,:].isel(**{t:slice(0, tlast, int(tlast/num_plots))}).plot(x='x', y=z, col=t, col_wrap=5)
-    plt.title(var.name, fontsize=12)
+#    plt.title(var.name, fontsize=12)
     plt.savefig(savepath + var.name + 'long.png')
 
 
@@ -62,10 +71,14 @@ def hslice(var, height, savepath):
     # Plot horizontal slice through 4D diagnostics - x vs y at specific height at time snapshots. For SHORT simulations, quick plotting.
     t = var.dims[0] # time series
     if var.dims[3] == 'z':
-        var.sel(z=height, method='nearest').plot(x='x', y='y', col=t, col_wrap=5)
+#        g = var.sel(z=height, method='nearest').plot(x='x', y='y', col=t)
+        g = var.sel(z=height, method='nearest').plot(x='x', y='y', col=t, col_wrap=3)
     else:
-        var.sel(zn=height, method='nearest').plot(x='x', y='y', col=t, col_wrap=5)
-    plt.title(var.name, fontsize=12)
+#        g = var.sel(zn=height, method='nearest').plot(x='x', y='y', col=t)
+        g = var.sel(zn=height, method='nearest').plot(x='x', y='y', col=t, col_wrap=3)
+    for i, ax in enumerate(g.axes.flat):
+        ax.set_title('Time = %d' % int(var[t][i]) + 's')
+#    plt.title(var.name, fontsize=12)
     plt.savefig(savepath + var.name + '.png')
 
 
