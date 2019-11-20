@@ -51,7 +51,7 @@ scenes = [DS[name] for name in names_3D]
 slices = [DS[name] for name in names_4D]
 
 # Plot using ncplotlib
-savepath = 'testplots/oat2/oat2_'
+savepath = 'testplots/oat1/oat1_'
 
 for var in scalars:
     fig, axes = plt.subplots()
@@ -65,13 +65,21 @@ for var in profiles:
     fig.savefig(savepath + var.name + '.png')
     plt.close()
 
-##for var in scenes:
-##    #plt.subplots()
-##    ncplt.scene(var, 10, savepath)
-##    print(var.name + ' saved')
+#for var in scenes:
+###    #plt.subplots()
+#    ncplt.scene(var, 10, savepath)
+###    print(var.name + ' saved')
 ##
 ##print('*** scenes processed ***')
    
 [ncplt.scene(var, savepath) for var in scenes]
 [ncplt.vslice(var, 60, 'x', savepath) for var in slices]
-                                   
+#[ncplt.hslice(var, 52, savepath) for var in slices]
+
+### TKE ###
+fig, axes = plt.subplots()
+tke_mean = (DS.reske_mean + DS.subke_mean)*1000
+tke_mean.plot()
+plt.title("TKE")
+plt.savefig(savepath + "tke.png")
+                            
