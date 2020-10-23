@@ -1,4 +1,4 @@
-#!/usr/bin/env python4
+#!/usr/bin/env python2.7
 import sys
 from sys import argv
 import pandas as pd
@@ -59,7 +59,7 @@ def comp_profile(axes, dycoms_var, converted_monc, colour_dycoms, colour_monc, t
 
 # Open datasets
 nc_mnc = sys.argv[1]
-nc_dcms = "./gcss7.nc"
+nc_dcms = "./S05_LES.nc"
 DS_monc = xr.open_dataset(nc_mnc)
 DS_dycoms = xr.open_dataset(nc_dcms)
 
@@ -75,6 +75,10 @@ for n, i in enumerate(DS_monc.options_database):
         rlvapn = n
     elif str(i.values[0]) == "b'cp'":
         cpn = n
+
+qlcritn = 1e-5
+rlvapn = 2.47e6
+cpn = 1015.0
 
 ### Cloud Boundaries ###
 #fig, axes = plt.subplots()
@@ -156,7 +160,9 @@ compare(axes, DS_dycoms.lwp_bar, lwp_mean_gkg, set_dycoms_colour, set_monc_colou
 ### Cloud Fraction ###  --- this depends on qlcrit being index 243 in options database 
 #fig, axes = plt.subplots()
 axes = fig.add_subplot(3, 5, 3)
-real_cfrac = np.mean(np.mean(DS_monc.q_cloud_liquid_mass>=float(DS_monc.options_database[qlcritn].values[1]), axis=3)>0.0, axis=(1,2))
+#real_cfrac = np.mean(np.mean(DS_monc.q_cloud_liquid_mass>=float(qlcritn), axis=3)>0.0, axis=(1,2))
+sumz = DS_monc.q_cloud_liquid_mass.sum(dim="z")
+real_cfrac = sumz.where(sumz.values < 1e-5, 1).where(sumz.values > 1e-5, 0).mean(dim=["x","y"])[:10]
 compare(axes, DS_dycoms.cfrac, real_cfrac, set_dycoms_colour, set_monc_colour, "Cloud Fraction", 1, "Cloud Fraction [%]")
 #plt.savefig("cloudfrac.png")
 #plt.show()
@@ -212,7 +218,7 @@ mean_abs_T = np.mean(absolute_T[4:5], axis=0) # average over 4th hour so lpot ca
 #fig, axes = plt.subplots()
 axes = fig.add_subplot(3,5,8)
 theta=DS_monc.theta_mean
-lpot=theta - (float(DS_monc.options_database[rlvapn].values[1])*theta/(float(DS_monc.options_database[cpn].values[1])*mean_abs_T))*DS_monc.liquid_mmr_mean
+lpot=theta - (float(rlvapn)*theta/(float(cpn)*mean_abs_T))*DS_monc.liquid_mmr_mean
 comp_profile(axes, DS_dycoms.thetal, lpot, set_dycoms_colour, set_monc_colour, "Theta_l")
 #plt.savefig("thetal.png")
 #plt.show()

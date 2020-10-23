@@ -252,43 +252,8 @@ arrays = [last, mean, tend, teme]
 rain_arrays = [rwp, surface_precip]
 testing_arrays = [lwp_last, lwp_mean_lasthr, lwp_tend_last, lwp_tend_ave, lwp_tend_diff]
 
-### Create figures and ax for plotting ppe ###
-#fig, ax = plt.subplots()
-#fig = plt.figure(figsize=(3.2,5))
-#ax = fig.add_subplot(111)
-#ax1 = fig.add_subplot(211)
-#ax2 = fig.add_subplot(212)  #
-#axes=[ax1,ax2]
-
 a=0  #
-#xlabel = r'x Direction (km)'
-#ylabel = r'y Direction (km)'
-#xlabel = 'Time (hours)'
-#ylabel = 'Height (m)'
 
-cmap = plt.cm.get_cmap('PiYG')
-cmap.set_bad(color='darkslateblue')
-'''
-figt,((axt1,axt2,axt3,axt4),(axt5,axt6,axt7,axt8),(axt9,axt10,axt11,axt12)) = plt.subplots(nrows=3,ncols=4,sharex=True,sharey=True)
-axest=[axt1,axt2,axt3,axt4,axt5,axt6,axt7,axt8,axt9,axt10,axt11,axt12]
-figm,((axm1,axm2,axm3,axm4),(axm5,axm6,axm7,axm8),(axm9,axm10,axm11,axm12)) = plt.subplots(nrows=3,ncols=4,sharex=True,sharey=True)
-axesm=[axm1,axm2,axm3,axm4,axm5,axm6,axm7,axm8,axm9,axm10,axm11,axm12]
-figb,((axb1,axb2,axb3,axb4),(axb5,axb6,axb7,axb8),(axb9,axb10,axb11,axb12)) = plt.subplots(nrows=3,ncols=4,sharex=True,sharey=True)
-axesb=[axb1,axb2,axb3,axb4,axb5,axb6,axb7,axb8,axb9,axb10,axb11,axb12]
-axt=0
-axm=0
-axb=0
-
-figt.suptitle('Top')
-figm.suptitle('Middle-bottom-right')
-figb.suptitle('Bottom-left')
-figt.text(0.5, 0.04, xlabel, ha='center')
-figt.text(0.04, 0.5, ylabel, va='center', rotation='vertical')
-figm.text(0.5, 0.04, xlabel, ha='center')
-figm.text(0.04, 0.5, ylabel, va='center', rotation='vertical')
-figb.text(0.5, 0.04, xlabel, ha='center')
-figb.text(0.04, 0.5, ylabel, va='center', rotation='vertical')
-'''
 ### Options ###
 first = 0
 last = -1
@@ -323,11 +288,11 @@ for key in od:
         ds = xr.open_dataset(nc)
         ds = ds_fix_dims(ds)
     
-        #if key == 'oat':   ## for low nd
-        #    hours = 7
-        #else:
-        #    hours = 8
-        hours = 8  ## for high nd
+        if key == 'oat':   ## for low nd
+            hours = 7
+        else:
+            hours = 8
+        #hours = 8  ## for high nd
             
         if calc == 'lwp_total':
             output_array, timeseries, tendency, times = lwp_total(ds, hours)
@@ -367,147 +332,20 @@ for key in od:
                 array[i, 1] = od[key][2][j][0]
                 array[i, 2] = output_array[b]
 
-        ### plot lwp vs cloudy_lwp ###
-        #plt.plot(np.linspace(0,30000,12),cloudy_lwp)
-        #tot_lwp_mean.plot()
-            	
-        ### plot lwp ppe lines ### 
-        #timeseries, time_hrs = tke_calc(ds)
-	#timeseries = timeseries.where(timeseries.values < 1e10)
-	   	
-        '''#### three quotes here
-        if key=="ppe":
-	    if k in below_ppe:
-    	        colour="green"
-        	label="below line ppe"	
-    	    else:
-    	        colour="blue"
-    	        label="above line ppe"
-        elif key=="val":
-    	    if k in below_val:
-    	        colour="lime"
-    	        label="below line val"
-    	    else:
-    	        colour="purple"
-    	        label="above line val"
-        elif key=='extra':
-    	    if k in below_extra:
-    	        colour="darkgreen"
-    	        label="below line extra"
-    	    else:
-    	        colour="indigo"
-    	        label="above line extra"
-        elif key=='base':
-    	    colour="black"
-    	    label="base"
-    	
-        if i in [0,18,30]:
-    	    colour="hotpink"
-    	    label="outlier"
-        elif i in [11]:
-    	    colour="gold"
-    	    label="corrupt"
-    	
-        if key!="oat":
-    	    line, = ax.plot(time_hrs, timeseries, color=colour, label=label)
-    	lines.append(line)
-        toplot=False
-        ### plot lwp scenes ###
-    	
-        if i in [18,8,0,12,16,6,36,32,27,30,25]:
-    	    axes = axest
-    	    fig = figt
-    	    a=axt
-    	    axt+=1
-    	    toplot=True
-        elif i in [15,14,3,7,9,2,19,33,34,35,24,26]:
-    	    axes = axesm
-    	    fig = figm
-    	    a=axm
-    	    axm+=1
-    	    toplot=True
-        elif i in [11,4,13,5,10,17,37,31,28,29]:
-    	    axes = axesb
-    	    fig = figb
-    	    a=axb
-    	    axb+=1
-    	    toplot=True
-        
-	#if key=='base':
-        toplot=True  #
-        #fig_lwp,ax_lwp = plt.subplots()
-        if toplot ==True:
-    	    lwp_masked_last = lwp_masked_last.transpose()
-	    lwp_masked_first = lwp_masked_first.transpose()
-    	    #plot_obj = lwp_masked.plot(ax=axes[a],add_colorbar=False, cmap=cmap,vmin=0,vmax=700)
-            np.savetxt("lwp_scenes_last/lnd_lwp_scene_last_values_%s%s.csv"%(key,k), lwp_masked_last.values, delimiter=',')
-            np.savetxt("lwp_scenes_first/lnd_lwp_scene_first_values_%s%s.csv"%(key,k), lwp_masked_first.values, delimiter=',')
-            #plot_obj.set_edgecolor('face')
-            #rain_mmr = ds.rain_mmr_mean*1000
-    	    #rain_mmr = rain_mmr.transpose()
-            #surf_precip = ds.surface_precip[-1]*1000
-    	    #surf_precip = surf_precip.transpose()
-            #plot_obj = rain_mmr.plot(ax=axes[a],add_colorbar=False,cmap=cmap,vmin=0, vmax=0.007)
-            #axes[a].set_xlabel(".",color=(0,0,0,0))
-            #axes[a].set_ylabel(".",color=(0,0,0,0))
-            #axes[a].set_title("%s %s"%(key, str(k)))
-    	    #if a in [0,1,2,3,4,5,6,7]:
-            #    plot_obj.axes.xaxis.set_visible(False)
-            #if a in [1,2,3,5,6,7,9,10,11]:
-            #    plot_obj.axes.yaxis.set_visible(False)
-            #if a==0: #
-        	#    plot_obj.axes.xaxis.set_visible(False) #
-                #plot_obj.axes.set_title('%s %s'%(key,str(k)))
-            #lwp_plot.colorbar.set_label("LWP (g m^(-2))")
-    	    #fig_lwp.savefig("./lwp_plots/%s%s.png"%(key,str(k)))
-    	    #plt.show()
-            #plt.close(fig_lwp)
-	#if key!='ppe':
-        #    print('PPE lwp scenes saved')
-        '''
         if key=='ppe':
             lwp_ppe.append(timeseries)
         elif key=='base':
             base=timeseries
 	### three quotes here
         np.savetxt('{}{}_timeseries.csv'.format(key,str(k)),timeseries,delimiter=',')
+        np.savetxt('{}{}_times.csv'.format(key,str(k)),time_hrs,delimiter=',')
         ds.close()
         print(i)
         i+=1
         a+=1 #
 	
-
-#label = 'Rain mmr (g kg^(-1))'
-#label = 'Surface Precipitation (mm)'
-#label = r'Liquid Water Path ($g\; m^{-2}$)'
-#axes[0].set_title(r'Lowest')
-#axes[1].set_title(r'Highest')
-#fig.suptitle(r'LWP Scene Samples')
-#fig.text(0.03, 0.5, ylabel, ha='center', va='center', rotation='vertical')
-#fig.text(0.5, 0.03, xlabel, ha='center', va='center')
-#fig.colorbar(plot_obj, ax=axes, extend='max', label=label)
-#figt.colorbar(plot_obj, ax=axest, extend='max', label=label)
-#figm.colorbar(plot_obj, ax=axesm, extend='max', label=label)
-#figb.colorbar(plot_obj, ax=axesb, extend='max', label=label)
-
 #ax.legend((lines[10],lines[7],lines[24],lines[20],lines[0],lines[11]), ('below line ppe', 'above line ppe', 'below line val', 'above line val','outlier','corrupt'), loc="upper left", fontsize=10)
-#plt.title('TKE timeseries - high Nd')
-#ax.set_ylabel('LWP g m^(-2)')
-#ax.set_ylabel('TKE')
-#ax.set_xlabel('Time (hrs)')
-#plt.show()
-#plt.savefig("highest_lowest.pdf")
-#plt.show()
-### Plotting lwp
-#ax.set_xlabel("Timestep - 55=1hr")
-#ax.set_ylabel("LWP (g m^(-2))")
-#ax.set_title("LWP for entire PPE")
 #ax.legend((lines[6],lines[7],lines[24],lines[25]), ['below line ppe', 'above line ppe', 'below line val', 'above line val'], loc="upper left", fontsize=10)
-#ax.set_title(calc + ': green below k, blue above k')
-#ax.set_ylabel(calc + ' tendency')
-#ax.set_ylabel(calc)
-#ax.set_xlabel('hours')
-#plt.show()
 '''
 if calc == 'rain':
     np.savetxt("dycoms_data_%s_rwp.csv"%calc, rain_arrays[0], delimiter=",")
@@ -525,7 +363,6 @@ else:
     np.savetxt("dycoms_data_%s_teme.csv"%calc, arrays[3], delimiter=",")
 #np.savetxt("ppe_lwp_timeseries.csv", lwp_ppe, fmt='%s', delimiter=',')
 '''
-
 ### Variability ###
 
 var_path = "/gws/nopw/j04/carisma/eers/dycoms_sim/INT_VAR/"
@@ -539,15 +376,7 @@ e_teme=[]
 lines=[]
 i=0
 
-fig, ax = plt.subplots(figsize=(7,6))
-ax.plot([6,6,6],np.linspace(0,305,3),linestyle=':',color='grey',alpha=0.5)
-ax.fill_betweenx(np.linspace(0,305,10),6,8.05,color='grey',alpha=0.2)
-#for line in lwp_ppe:
-#    legend_line, = line.plot(color='grey',alpha=0.3, label = 'PPE Simulations')
-
-#base_line, = base.plot(color='lime',alpha=0.5,label='DYCOMS-II RF01')
 for point in points:
-    #fig,ax = lt.subplots()
     if point=='kparam':
         colour = (238/255, 27/255, 155/255)
     elif point=='thick':
@@ -576,10 +405,9 @@ for point in points:
             print("Select calc")
             break
 
-        #line, = ax.plot(time_hrs, timeseries, color=colour, label =points[point])
-        #lines.append(line)
         np.savetxt('{}{}_timeseries.csv'.format(point,str(i+1)), timeseries,delimiter=',')
-    
+        np.savetxt('{}{}_times.csv'.format(point,str(i+1)),time_hrs,delimiter=',')
+
         e_last.append(output_array[0])
         e_mean.append(output_array[1])
         e_tend.append(output_array[2])
@@ -595,13 +423,4 @@ output_type=e_mean
 #thin_var ="{:.2f}".format(np.var(output_type[10:14]))
 #labels = "%s, $\mu = %s,\; \sigma^{2} = %s$"
 
-#ax.set_title('LWP Timeseries for PPE')
-#ax.set_ylabel('Liquid Water Path ($g\; m^{-2}$)')
-#ax.set_xlabel('Time (h)')
-#ax.legend((lines[0],lines[5],lines[10],base_line,legend_line),[labels%(points['thick'],thick_mean,thick_var),labels%(points['kparam'],kparam_mean,kparam_var),labels%(points['thin'],thin_mean,thin_var),"DYCOMS-II RF01","PPE Simulations"],loc="upper left", fontsize=10,frameon=False)
-#ax.set_xlim(0,8.05)
-#ax.set_ylim(-5,195)
-#fig.savefig('int_var_ensemble.pdf')
-#fig.savefig('int_var_ensemble.png')
-#plt.show()
 #np.savetxt('ensemble_%s.csv'%calc, [e_last, e_mean, e_tend, e_teme], delimiter=',')

@@ -1,13 +1,18 @@
 '''
 Library of functions for plotting straight from netCDF files
 '''
-
+from matplotlib import rc
 import matplotlib.pyplot as plt
+
+rc('font', size=15)
 
 def scalar(fig, axes, var):
     '''    
     Plot scalar diagnostics at each simulation time
     '''
+    # extra for bad value in oat1
+#    good = var.where(var<10000, drop=True)
+#    good.plot(ax=axes)
     var.plot(ax=axes)
     plt.title(var.name, fontsize=12)
     return fig
@@ -27,41 +32,38 @@ def scene(var, savepath):
     ''' 
     Plot scene diagnostics - x and y domain lengths averaged over height at time snapshots.
     '''
+#    print(var.name)
     t = var.dims[0] # time series
-    tlast = var.sizes[t] - 1
+#    tlast = var.sizes[t] - 1  # change to 4 to avoid bad values at end times
     if var.sizes[t] > 9:
-        g = var.isel(**{t:slice(0, tlast, int(tlast/9))}).plot(x='x',y='y', col=t, col_wrap=3)
+        g = var.isel(**{t:slice(0, (var.sizes[t]-1), int(var.sizes[t]/9))}).plot(x='x',y='y',
+		col=t, col_wrap=3)
     else:
+#        g = var.plot(x='x', y='y', col=t, col_wrap=3)
         g = var.plot(x='x', y='y', col=t, col_wrap=3)
 
     for i, ax in enumerate(g.axes.flat):
         ax.set_title('Time = %d' % int(var[t][i]) + 's')
 
     #plt.title(var.name, fontsize=12)
-#    plt.savefig(savepath + var.name + '.png')
-    plt.show()
+    plt.savefig(savepath + var.name + '.png')
+#    plt.show()
+    plt.close()
 
-#def scene_long(var, num_plots, savepath):
-#    # Plot scene diagnostics - x and y domain lengths averaged over simulation time
-#    t = var.dims[0] # time series
-#    tlast = (var.sizes[t]-1)
-#    var.isel(**{t:slice(0, tlast, int(tlast/num_plots))}).plot(x='x',y='y', col=t, col_wrap=5)
-##    plt.title(var.name, fontsize=12)
-#    plt.savefig(savepath + var.name + '.png')
-#
 
 def vslice(var, depth, horizontal_dim, savepath):
     '''
     Plot vertical slice through 4D diagnostics - x or y vs height at time snapshots. For SHORT simulations, quick plotting
     '''
+#    print(var.name)
     t = var.dims[0] # time series
     z = var.dims[3]
-    tlast = (var.sizes[t]-1)
+#    tlast = (var.sizes[t]-1)
     if var.sizes[t] > 9:
         if horizontal_dim == 'x':
-            g = var[:,depth,:,:].isel(**{t:slice(0, tlast, int(tlast/9))}).plot(x='y', y=z, col=t, col_wrap=3)
+            g = var[:,depth,:,:].isel(**{t:slice(0, (var.sizes[t]-1), int(var.sizes[t]/9))}).plot(x='y', y=z, col=t, col_wrap=3)
         elif horizontal_dim == 'y':
-            g = var[:,:,depth,:].isel(**{t:slice(0, tlast, int(tlast/9))}).plot(x='x', y=z, col=t, col_wrap=3)
+            g = var[:,:,depth,:].isel(**{t:slice(0, (var.sizes[t]-1), int(var.sizes[t]/9))}).plot(x='x', y=z, col=t, col_wrap=3)
     else:
         if horizontal_dim == 'x':
             g = var[:,depth,:,:].plot(x='y', y=z, col=t, col_wrap=3)
@@ -70,22 +72,9 @@ def vslice(var, depth, horizontal_dim, savepath):
     for i, ax in enumerate(g.axes.flat):
         ax.set_title('Time = %d' % int(var[t][i]) + 's')
 #    plt.title(var.name, fontsize=12)
-#    plt.savefig(savepath + var.name + '.png')
-    plt.show()
+    plt.savefig(savepath + var.name + '.png')
+#    plt.show()
     plt.close()
-
-
-#def vslice_long(var, horizontal_dim, depth, num_plots, savepath):
-#    # Plot vertical slice through 4D diagnostics - x or y vs height at time snapshots
-#    t = var.dims[0] # time series
-#    tlast = (var.sizes[t]-1)
-#    z = var.dims[3]
-#    if horizontal_dim == 'x':
-#        var[:,depth,:,:].isel(**{t:slice(0, tlast, int(tlast/num_plots))}).plot(x='y', y=z, col=t, col_wrap=5)
-#    elif horizontal_dim == 'y':
-#        var[:,:,depth,:].isel(**{t:slice(0, tlast, int(tlast/num_plots))}).plot(x='x', y=z, col=t, col_wrap=5)
-##    plt.title(var.name, fontsize=12)
-#    plt.savefig(savepath + var.name + 'long.png')
 
 
 def hslice(var, height, savepath):
@@ -107,16 +96,7 @@ def hslice(var, height, savepath):
     for i, ax in enumerate(g.axes.flat):
         ax.set_title('Time = %d' % int(var[t][i]) + 's')
 #    plt.title(var.name, fontsize=12)
-#    plt.savefig(savepath + var.name + '.png')
-    plt.show()
+    plt.savefig(savepath + var.name + '.png')
+#    plt.show()
+    plt.close()
 
-#def hslice_long(var, height, num_plots, savepath):
-#    # Plot horizontal slice through 4D diagnostics - x vs y at specific height at time snapshots
-#    t = var.dims[0] # time series
-#    tlast = (var.sizes[t]-1)
-#    if var.dims[3] == 'z':
-#        var.isel(**{t:slice(0, tlast, int(tlast/num_plots))}).sel(z=height, method='nearest').plot(x='x', y='y', col=t, col_wrap=5)
-#    else:
-#        var.isel(**{t:slice(0, tlast, int(tlast/num_plots))}).sel(zn=height, method='nearest').plot(x='x', y='y', col=t, col_wrap=5)
-#    plt.title(var.name, fontsize=12)
-#    plt.savefig(savepath + var.name + 'long.png')
