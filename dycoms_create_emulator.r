@@ -34,12 +34,15 @@ krig.mean = function(Xnew,m) {
 # Load data and create variables -----------------------------------------------
 # File extensions
 nd   <- "low"
-calc <- "cloud_frac" # lwp_cloud cloud_frac
-type <- "mean"       # mean teme
-noise_type <- "unnormal_2_ungrouped"
+calc <- "lwp_cloud"     # lwp_cloud cloud_frac
+type <- "mean"          # mean teme
+noise_type <- "all_9"   # all_9 or slice_# e.g., slice_2
 
 # indices of the ensembles that are being used:
-iterator<-list(2,5)     # list(0,1,2,3,4,5,6,7,8)
+iterator<-list(0,1,2,3,4,5,6,7,8)     # all_9
+#iterator<-list(0,2)                   # slice_2 lwp_cloud
+#iterator<-list(2,3)                   # slice_2 cloud_frac
+#iterator<-list(0,1,2,3,4,5)
 
 # Load data
 data_path  <- sprintf("data_%s/dycoms_data_%s_nd_%s_%s.csv", calc, nd, calc, type)
@@ -96,7 +99,7 @@ pairs(cbind(rbind(training_input, validation_input),lwp=c(training_output, valid
 # Deal with ensembles and noise vectors ----------------------------------------
 # If using initial-condition ensembles, replace the training data at the 
 # ensemble points with the mean
-if (noise_type!="exact" & noise_type!="extras" & noise_type!="1mag" & noise_type!="2mag" & noise_type!="trial") {
+if (noise_type!="exact" & noise_type!="extras" & noise_type!="2mag") {
   indices<-c(3,9,11,14,15,17,18,19,20)
   
   ensembleData<-read.csv(sprintf("data_%s/ensemble_%s_mean.csv", calc, calc),
@@ -115,7 +118,7 @@ if (noise_type!="exact" & noise_type!="extras" & noise_type!="1mag" & noise_type
 # Load noise vector 
 rm(NV)
 if (noise_type!="exact" & noise_type!="extras") {
-  noise_read = sprintf("noise_files/nv_0424_%s_%s_%s.csv", 
+  noise_read = sprintf("noise_files/nv_%s_%s_%s.csv", 
                                             calc, type, noise_type)
   noise_vector<-read.csv(noise_read,header=FALSE,stringsAsFactors=FALSE)
   NV<-c(noise_vector[1:20,1],noise_vector[33:38,1])

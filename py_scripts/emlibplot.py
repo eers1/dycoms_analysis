@@ -190,7 +190,7 @@ class Emulator:
                    cmap=cm,
                    norm=norm,
                    edgecolors='black',
-                   marker='^',
+                   marker='o',
                    #edgecolors="#2D93AD",
                    #linestyle=(0,(1,1)),
                    linewidths=self.edgesize)
@@ -226,12 +226,13 @@ class Emulator:
                                        c=self.lwp_base,
                                        cmap=cm,norm=norm,
                                        marker="v",
-                                       edgecolors='white',
+                                       edgecolors="black",
                                        #edgecolors="#348357",
                                        s=self.dsize,
                                        linewidths=self.edgesize)
             #self.add_Dycoms(ax)
-            self.kparamline=self.add_Kparam(ax,"#CE8964")
+            #self.kparamline=self.add_Kparam(ax,"#CE8964")
+            self.kparamline=self.add_Kparam(ax,"black")
         else:
             #arr = np.asarray([2,8,10,13,14,16,17,18,19])
             #if any(ensemble_select)==-1:
@@ -353,7 +354,7 @@ class Emulator:
         return dycomsmark
 
     def add_Kparam(self, ax, kparam_col):
-        kparamline=ax.plot(self.kx, self.ky, color="white", linestyle='--')#color=kparam_col)
+        kparamline=ax.plot(self.kx, self.ky, color="black", linestyle='--')#color=kparam_col)
         # ax.text(2.25,
         #         -3.1,
         #         r"$\kappa$ for DYCOMS-II",
