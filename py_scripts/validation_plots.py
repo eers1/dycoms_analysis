@@ -49,44 +49,47 @@ nd_ = '' if nd=='low' else f'{nd}_nd_'
 noise_type = 'extras'
 
 ### LWP ###
-noise_type = "max_g_048_everywhere" 
-valpred = np.loadtxt(f"../predictions/lwp_cloud/pre_val_{nd_}lwp_cloud_mean_{noise_type}.csv",delimiter=",",skiprows=1)
+noise_type = "slice_2" 
+valpred = np.loadtxt(f"../predictions/lwp_cloud/pre_val_lwp_cloud_mean_{noise_type}.csv",delimiter=",",skiprows=1)
 actual = np.loadtxt(f"../data_lwp_cloud/dycoms_data_{nd}_nd_lwp_cloud_mean.csv",delimiter=",")
 actualval = actual[24:32,2]
 mean, line, errors, error_lines, sd, upper95, lower95 = val_plot(valpred, actualval, axes[0,0])
 #print([e*100/m for e,m in zip(errors, mean)])
 print(np.mean([(u95-m)*100/m for u95, m in zip(upper95, mean)]))
 print(np.mean([(l95-m)*100/m for l95, m in zip(lower95, mean)]))
+print(np.mean((np.abs(valpred[:,1]-actualval))*100/actualval))
 #print(sd)
 del(valpred, actual, actualval)
 
 ### LWP Tend ###
-noise_type = "none_g_all_everywhere"
-valpred = np.loadtxt(f"../predictions/lwp_cloud/pre_val_{nd_}lwp_cloud_teme_{noise_type}.csv",delimiter=",",skiprows=1)
+noise_type = "slice_2"
+valpred = np.loadtxt(f"../predictions/lwp_cloud/pre_val_lwp_cloud_teme_{noise_type}.csv",delimiter=",",skiprows=1)
 actual = np.loadtxt(f"../data_lwp_cloud/dycoms_data_{nd}_nd_lwp_cloud_teme.csv",delimiter=",")
 actualval = actual[24:32,2]
 mean, line, errors, error_lines, sd, upper95, lower95 = val_plot(valpred, actualval, axes[0,1])
 #print([e*100/m for e,m in zip(errors, mean)])
 print(np.mean([(u95-m)*100/m for u95, m in zip(upper95, mean)]))
 print(np.mean([(l95-m)*100/m for l95, m in zip(lower95, mean)]))
+print(np.mean((np.abs(valpred[:,1]-actualval))*100/actualval))
 #print(sd)
 del(valpred, actual, actualval)
 
 ### CF ###
-noise_type = "max_g_all_everywhere"
-valpred = np.loadtxt(f"../predictions/cloud_frac/pre_val_{nd_}cloud_frac_mean_{noise_type}.csv",delimiter=",",skiprows=1)
+noise_type = "slice_2"
+valpred = np.loadtxt(f"../predictions/cloud_frac/pre_val_cloud_frac_mean_{noise_type}.csv",delimiter=",",skiprows=1)
 actual = np.loadtxt(f"../data_cloud_frac/dycoms_data_{nd}_nd_cloud_frac_mean.csv",delimiter=",")
 actualval = actual[24:32,2]
 mean, line, errors, error_lines, sd, upper95, lower95 = val_plot(valpred, actualval, axes[1,0])
 #print([e*100/m for e,m in zip(errors, mean)])
 print(np.mean([(u95-m)*100/m for u95, m in zip(upper95, mean)]))
 print(np.mean([(l95-m)*100/m for l95, m in zip(lower95, mean)]))
+print(np.mean((np.abs(valpred[:,1]-actualval))*100/actualval))
 #print(sd)
 del(valpred, actual, actualval)
 
 ### CF Tend ###
-noise_type = "none_g_all_everywhere"
-valpred = np.loadtxt(f"../predictions/cloud_frac/pre_val_{nd_}cloud_frac_teme_{noise_type}.csv",delimiter=",",skiprows=1)
+noise_type = "slice_5"
+valpred = np.loadtxt(f"../predictions/cloud_frac/pre_val_cloud_frac_teme_{noise_type}.csv",delimiter=",",skiprows=1)
 actual = np.loadtxt(f"../data_cloud_frac/dycoms_data_{nd}_nd_cloud_frac_teme.csv",delimiter=",")
 actualval = actual[24:32,2]
 
@@ -94,8 +97,9 @@ mean, line, errors, error_lines, sd, upper95, lower95 = val_plot(valpred, actual
 #print([e*100/m for e,m in zip(errors, mean)])
 print(np.mean([(u95-m)*100/m for u95, m in zip(upper95, mean)]))
 print(np.mean([(l95-m)*100/m for l95, m in zip(lower95, mean)]))
+print(np.mean((np.abs(valpred[:,1]-actualval))*100/actualval))
 #print(sd)
-del(valpred, actual, actualval)
+#del(valpred, actual, actualval)
 
 ### Plot additions ###
 fig.text(0.37,0.03, r"MONC model output", ha='center', va='center',fontsize=font)
@@ -105,7 +109,7 @@ axes[1,1].legend(loc=(1.05,0),shadow=False,fancybox=False)
 for ax,letter in zip([axes[0,0],axes[0,1],axes[1,0],axes[1,1]],['a','b','c','d']):
     ax.text(0.01,1.04,f'{letter})',transform=ax.transAxes,fontsize=font)
 
-#fig.savefig(f'/home/rach/Emulator/paper1_plots/validation_{nd}_nd_nuggets.pdf')
-#fig.savefig(f'/home/rach/Emulator/paper1_plots/validation_{nd}_nd_nuggets.png')
+fig.savefig(f'../figures/validation_{nd}_nd_nuggets_min_ensembles.pdf')
+fig.savefig(f'../figures/validation_{nd}_nd_nuggets_min_ensembles.png')
 plt.show()
 plt.close()

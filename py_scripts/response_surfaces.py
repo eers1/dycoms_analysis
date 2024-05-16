@@ -2,7 +2,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-import py_scripts.emlibplot as elp
+import emlibplot as elp
 from matplotlib import rc, colors
 from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
@@ -56,8 +56,7 @@ options_dict = {
     'ylabel' : r'$\Delta$q$_{t}$ (g kg$^{-1}$)',
     'newpoints' : new_points,
     'pltvar' : False,
-    'savebool' : False,
-    'path' : '/home/rach/Emulator/Surfaces/',
+    'savebool': False,
     'markerfonts' : 13,
     'font': font,
     'dsize' : 120,
@@ -77,9 +76,11 @@ exact_predictions = np.loadtxt(f'../predictions/lwp_cloud/pre_tot_{nd_}lwp_cloud
 vmin = 0
 vmax = 180 if nd=='low' else 250
 norm = colors.TwoSlopeNorm(vcenter=0.5*vmax,vmin=0,vmax=vmax)
-cm_data =np.loadtxt("/home/rach/Python/colour_maps/ScientificColourMaps6/tokyo/tokyo.txt")
-cmap = colors.LinearSegmentedColormap.from_list('tokyo', cm_data)
-cmap = cmap.reversed()
+
+cmap_string = "nuuk"
+cm_data =np.loadtxt(f"../colour_maps/ScientificColourMaps6/{cmap_string}/{cmap_string}.txt")
+cmap = colors.LinearSegmentedColormap.from_list(cmap_string, cm_data)
+#cmap = cmap.reversed()
 
 title = ''
 figname = 'lwp_nv_nugget_estim_%s.png'
@@ -96,8 +97,8 @@ colour_obj = Em_LWP_exact.plot_2DCmap(title, output_label,  cmap, levels,divergi
 #cax = ax.inset_axes(cbar_loc, transform=ax.transAxes)
 cbar=fig_cmap.colorbar(colour_obj, ax=ax,norm=norm,  orientation='vertical',label=output_label,format="%0.0f",)
 ax.xaxis.set_visible(False)
-ax.text(0.04,0.71,'A',transform=ax.transAxes,c='white')
-ax.text(0.1,0.8,'B',transform=ax.transAxes,c='white')
+ax.text(0.04,0.71,'A',transform=ax.transAxes,c='black')
+ax.text(0.1,0.8,'B',transform=ax.transAxes,c='black')
 ax.text(0.01,1.03,'a)',transform=ax.transAxes,fontsize=font)
 
 ### LWP tend
@@ -109,7 +110,7 @@ cm_vmax = max(exact_pred_mean)
 extreme = max(abs(cm_vmin),abs(cm_vmax))
 #norm = colors.TwoSlopeNorm(vcenter=0,vmin=(-18),vmax=18)
 norm = colors.TwoSlopeNorm(vcenter=0,vmin=(-1)*extreme,vmax=extreme)
-cm_data =np.loadtxt("/home/rach/Python/colour_maps/ScientificColourMaps6/cork/cork.txt")
+cm_data =np.loadtxt("../colour_maps/ScientificColourMaps6/cork/cork.txt")
 cmap = colors.LinearSegmentedColormap.from_list('cork', cm_data)
 cmap = cmap.reversed()
 
@@ -128,8 +129,8 @@ colour_obj = Em_LWP_tend_exact.plot_2DCmap(title, output_label, cmap,levels, div
 fig_cmap.colorbar(colour_obj, ax=ax, label=output_label,format="%0.0f", orientation='vertical')
 ax.xaxis.set_visible(False)
 ax.yaxis.set_visible(False)
-ax.text(0.04,0.71,'A',transform=ax.transAxes,c='white')
-ax.text(0.1,0.8,'B',transform=ax.transAxes,c='white')
+ax.text(0.04,0.71,'A',transform=ax.transAxes,c='black')
+ax.text(0.1,0.8,'B',transform=ax.transAxes,c='black')
 ax.text(0.01,1.03,'b)',transform=ax.transAxes,fontsize=font)
 
 ### CF
@@ -138,9 +139,9 @@ exact_predictions = np.loadtxt(f'../predictions/cloud_frac/pre_tot_{nd_}cloud_fr
 vmin = 0.2
 vmax = 1
 norm = colors.TwoSlopeNorm(vcenter=vmin+(0.5*(vmax-vmin)),vmin=vmin,vmax=vmax)
-cm_data =np.loadtxt("/home/rach/Python/colour_maps/ScientificColourMaps6/tokyo/tokyo.txt")
-cmap = colors.LinearSegmentedColormap.from_list('tokyo', cm_data)
-cmap = cmap.reversed()
+cm_data =np.loadtxt(f"../colour_maps/ScientificColourMaps6/{cmap_string}/{cmap_string}.txt")
+cmap = colors.LinearSegmentedColormap.from_list(cmap_string, cm_data)
+#cmap = cmap.reversed()
 
 figname = 'cloud_frac_exact_%s.png'
 output_label =  'Cloud Fraction'
@@ -156,8 +157,8 @@ Em_CF_exact = elp.Emulator(
 colour_obj = Em_CF_exact.plot_2DCmap(title, output_label, cmap, levels,diverging, False,norm,figname%('cmap'),fig=fig_cmap,ax=ax,extend="min", transect=False)
 #cax = ax.inset_axes(cbar_loc, transform=ax.transAxes)
 fig_cmap.colorbar(colour_obj, ax=ax, label=output_label,format="%0.1f", orientation='vertical')
-ax.text(0.04,0.71,'A',transform=ax.transAxes,c='white')
-ax.text(0.1,0.8,'B',transform=ax.transAxes,c='white')
+ax.text(0.04,0.71,'A',transform=ax.transAxes,c='black')
+ax.text(0.1,0.8,'B',transform=ax.transAxes,c='black')
 ax.text(0.01,1.03,'c)',transform=ax.transAxes,fontsize=font)
 
 ### CF tend
@@ -168,7 +169,7 @@ cm_vmin = min(exact_pred_mean)
 cm_vmax = max(exact_pred_mean)
 extreme = max(abs(cm_vmin),abs(cm_vmax))
 norm = colors.TwoSlopeNorm(vcenter=0,vmin=-0.04,vmax=0.04)
-cm_data =np.loadtxt("/home/rach/Python/colour_maps/ScientificColourMaps6/cork/cork.txt")
+cm_data =np.loadtxt("../colour_maps/ScientificColourMaps6/cork/cork.txt")
 cmap = colors.LinearSegmentedColormap.from_list('cork', cm_data)
 cmap = cmap.reversed()
 
@@ -185,8 +186,8 @@ Em_CF_tend_exact = elp.Emulator(
 
 colour_obj = Em_CF_tend_exact.plot_2DCmap(title, output_label,cmap,levels, diverging, False,norm,figname%('cmap'),fig=fig_cmap,ax=ax,extend="both", transect=False)
 ax.yaxis.set_visible(False)
-ax.text(0.04,0.71,'A',transform=ax.transAxes,c='white')
-ax.text(0.1,0.8,'B',transform=ax.transAxes,c='white')
+ax.text(0.04,0.71,'A',transform=ax.transAxes,c='black')
+ax.text(0.1,0.8,'B',transform=ax.transAxes,c='black')
 ax.text(0.01,1.03,'d)',transform=ax.transAxes,fontsize=font)
 #cax = ax.inset_axes(cbar_loc, transform=ax.transAxes)
 fig_cmap.colorbar(colour_obj, ax=ax, label=output_label,format="%1.2f", orientation='vertical')
@@ -197,21 +198,20 @@ if noise_type!="exact":
     custom_lines = [Line2D([], [], c='black', lw=0, marker='v', markerfacecolor="white", markersize=11),
                 Line2D([], [], c='black', lw=0, marker='o', markerfacecolor="white", markersize=11),
                 Line2D([], [], c='black', lw=0, marker='s', markerfacecolor="white", markersize=11),
-                Line2D([], [], c='black', lw=0, marker='^', markerfacecolor="white", markersize=11),
                 Line2D([0], [0], c='black', lw=1, linestyle='--')]
-    custom_labels = ["Base", "Training", "Validation", "Extra", "$\kappa$"]
-    location = (-1.65,-0.41)
+    custom_labels = ["Base", "Training", "Validation", "$\kappa$"]
+    location = (-1.48,-0.41)
 else:
     custom_lines = [Line2D([], [], c='black', lw=0, marker='v', markerfacecolor="white", markersize=11),
                 Line2D([], [], c='black', lw=0, marker='o', markerfacecolor="white", markersize=11),
                 Line2D([], [], c='black', lw=0, marker='s', markerfacecolor="white", markersize=11),
                 Line2D([0], [0], c='black', lw=1, linestyle='--')]
     custom_labels = ["Base", "Training", "Validation", "$\kappa$"]
-    location = (-1.4,-0.41)
+    location = (4,4)
     
 ax_dict['ax3'][0].legend(custom_lines, custom_labels, loc=location, ncol=5,shadow=False,fancybox=False)
 
-#fig_cmap.savefig(f'/home/rach/Emulator/Surfaces/{nd}_nd/response_surfaces_{noise_type}.png')
-#fig_cmap.savefig(f'/home/rach/Emulator/Surfaces/{nd}_nd/response_surfaces_{noise_type}.pdf')
+fig_cmap.savefig(f'../figures/response_surfaces_{noise_type}.png')
+fig_cmap.savefig(f'../figures/response_surfaces_{noise_type}.pdf')
 plt.show()
 plt.close()
